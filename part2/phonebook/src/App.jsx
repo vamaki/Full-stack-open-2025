@@ -34,8 +34,7 @@ const App = () => {
           setTimeout(() => setErrorMessage(null), 5000)
         })
         .catch(error => {
-          console.log(error)
-          setErrorMessage({msg:`Information of ${newName} has already been removed from server`, type:"err"})
+          setErrorMessage({msg: error.response.data.error, type:"err"})
           setTimeout(() => setErrorMessage(null), 5000)
         })
         setNewName('')
@@ -51,6 +50,10 @@ const App = () => {
           setPersons(persons.concat(response.data))
           setNewName('')
           setNewNumber('')
+        })
+        .catch(error => {
+          setErrorMessage({msg: error.response.data.error, type:"err"})
+          setTimeout(() => setErrorMessage(null), 5000)
         })
       setErrorMessage({msg:`Added ${newName}`, type:"success"})
       setTimeout(() => setErrorMessage(null), 5000)
@@ -76,7 +79,15 @@ const App = () => {
     }
 
     personService
-      .deletePerson(id).then()
+      .deletePerson(id)
+      .then(() => {
+        setErrorMessage({msg: `Deleted ${person.name}`, type: "success"})
+        setTimeout(() => setErrorMessage(null), 5000)
+      })
+      .catch(error => {
+        setErrorMessage({msg: error.response.data.error, type:"err"})
+        setTimeout(() => setErrorMessage(null), 5000)
+      })
 
     setPersons(persons.filter(person => person.id !== id))
   }
